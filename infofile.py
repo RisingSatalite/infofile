@@ -4,24 +4,21 @@ import os
 import shlex
 
 def on_drop(event):
-    # Print the path(s) of the dropped files
-    print("Dropped files path:", event.data)
-    fileType = event.data.split(".")[-1]
-    print("It is a: ", fileType)
-    filePath = event.data.split("/")[-1]
-    print("Name: ", filePath)
-    file_path = event.data
-    print(file_path[-1])
-
-    if os.path.exists(file_path):
-        print("File name:", os.path.basename(file_path))
-        print("Directory:", os.path.dirname(file_path))
-        print("Size (bytes):", os.path.getsize(file_path))
-        print("Last modified:", os.path.getmtime(file_path))
-        print("Created:", os.path.getctime(file_path))
-    else:
-        print("File does not exist.")
-        print(file_path)
+    raw_data = event.data
+    files = shlex.split(raw_data)
+    print("Dropped files:")
+    for f in files:
+        print(f)
+        
+        if os.path.exists(f):
+            print("File name:", os.path.basename(f))
+            print("Directory:", os.path.dirname(f))
+            print("Size (bytes):", os.path.getsize(f))
+            print("Last modified:", os.path.getmtime(f))
+            print("Created:", os.path.getctime(f))
+        else:
+            print("File does not exist.")
+            print(f)
 
 # Create a special TkinterDnD window
 root = TkinterDnD.Tk()
