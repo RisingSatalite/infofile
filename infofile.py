@@ -6,14 +6,19 @@ import re
 def on_drop(event):
     print("== Dropped files ==")
 
-    print(event.data)
+    #print(event.data)
 
     # Extract strings inside curly brackets and save to a list
     curly_contents = re.findall(r'\{([^}]*)\}', event.data)
-    print("Strings inside curly brackets:", curly_contents)
-    files = curly_contents
+    #print("Strings inside curly brackets: ", curly_contents)
 
-    print(files)
+    # Replace everything inside curly braces (including braces) with a space
+    new_data = re.sub(r'\{[^}]*\}', ' ', event.data).split(' ')
+    #print("Other data not in brakets: ", new_data)
+
+    files = [item for item in curly_contents if item.strip()] + [item for item in new_data if item.strip()]
+
+    print(files, '\n')
     for file in files:
         if os.path.isfile(file):
             print("File name:", os.path.basename(file))
@@ -21,8 +26,10 @@ def on_drop(event):
             print("Size (bytes):", os.path.getsize(file))
             print("Last modified:", os.path.getmtime(file))
             print("Created:", os.path.getctime(file))
+            print("\n")
         else:
             print(f"File does NOT exist: {file}")
+            print("\n")
 
 # Create the DnD-enabled window
 root = TkinterDnD.Tk()
